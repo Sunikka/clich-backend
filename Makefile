@@ -1,27 +1,14 @@
 
 BINDIR := bin
-CLIENT := $(BINDIR)/clich
-SERVER := $(BINDIR)/server
+APP := $(BINDIR)/clich
 
-
-# Build both client and server
-all: build
-build: build-client build-server
-
-build-client:
-	go build -o $(CLIENT) ./cmd
-
-build-server:
-	go build -o $(SERVER) ./cmd
+build:
+	go build -o $(APP) ./cmd
 
 
 # Build and run executables
-run-client: build-client
-	$(CLIENT)
-
-run-server: build-server
-	$(SERVER)
-
+run: build
+	$(APP)
 
 # Delete executable binaries
 clean:

@@ -62,6 +62,7 @@ func (userService *UserService) handleLogin(w http.ResponseWriter, r *http.Reque
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		utils.RespondErrJSON(w, http.StatusBadRequest, fmt.Sprintf("Login failed: %v", err))
+		return
 	}
 
 	// first login version is by username, however it will be probably remade later, since this forces making usernames unique
@@ -69,15 +70,18 @@ func (userService *UserService) handleLogin(w http.ResponseWriter, r *http.Reque
 	if err != nil {
 		utils.RespondErrJSON(w, http.StatusBadRequest, fmt.Sprintf("Login failed"))
 		log.Printf("Login error for username %s: %v ", user.Username, err)
+		return
 	}
 
 	if auth.CheckPassword(user, req.Password) == false {
 		utils.RespondErrJSON(w, http.StatusForbidden, fmt.Sprintf("Access denied, Wrong username or password"))
+		return
 	}
 
 	token, err := auth.GenerateToken(user)
 	if err != nil {
 		log.Printf("token generation failed: %v", err)
+		return
 	}
 
 	response := auth.LoginResponse{
